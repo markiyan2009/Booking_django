@@ -1,0 +1,22 @@
+{% extends "booking\base.html" %}
+
+{%block content%}
+    <form method="post">{%csrf_token%}
+        <label for="number">Room number</label>
+        <input type="number" name="number"><br>
+        <label for="price">Price for one day</label>
+        <input type="number" name="price"><br>
+        <label for="people_in">Max people</label>
+        <input type="number" name="people_in"><br>
+        <label for="type_room">Type</label>
+        <select name="type_room">
+            <option value="Econom">Econom</option>
+            <option value="Standart">Standart</option>
+            <option value="Vip">VIP</option>
+        </select><br>
+        <label for="avaible">Avaible</label>
+        <input type="checkbox" name="avaible">
+        <br>
+        <input type="submit">
+    </form>
+{%endblock%}

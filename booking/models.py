@@ -2,17 +2,21 @@ from django.db import models
 
 # Create your models here.
 class Room(models.Model):
-    number = models.IntegerField(null=True)
+    number = models.IntegerField()
     price = models.IntegerField()
     people_in = models.IntegerField(default=0)
-    max_people = models.IntegerField()
+    max_people = models.IntegerField(null=False)
     type_room = models.CharField(max_length=150)
     avaible = models.BooleanField()
 
-    def __str__(self):
-        return str(self.number)
     class Meta:
         ordering = ["avaible"]
+
+    def __str__(self):
+        return str(self.number)
+    
+
+    
     
 class User(models.Model):
     email = models.EmailField()

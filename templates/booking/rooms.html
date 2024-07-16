@@ -1,0 +1,7 @@
+{%extends "booking/base.html"%}
+
+{%block content%}
+    {%for room in rooms%}
+        <h1><a href="">Room #{{room.number}}</a></h1>
+    {%endfor%}
+{%endblock%}
