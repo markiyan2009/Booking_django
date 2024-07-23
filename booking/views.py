@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from booking.models import User, Room, Booking 
 from django.http import HttpResponse
-# Create your views here.
+from datetime import datetime
+# Create your views here
+def index(request):
+    return render(request, template_name="booking/index.html")
 def get_rooms(request):
     rooms = Room.objects.all()
     context = {
@@ -46,6 +49,7 @@ def add_room(request):
         number = request.POST.get("number")
         price = request.POST.get("price")
         people_in = request.POST.get("people_in")
+        max_people = request.POST.get("max_people")
         type_room = request.POST.get("type_room")
         avaible = request.POST.get("avaible")
         print(avaible)
@@ -53,8 +57,35 @@ def add_room(request):
             avaible = True
         else:
             avaible=False
-        room = Room(number=number,price=price,people_in=people_in,type_room=type_room,avaible=avaible)
+        room = Room(number=number,price=price,people_in=people_in,type_room=type_room,avaible=avaible,max_people=max_people)
         room.save()
         return redirect("rooms")
     else:
         return render(request,template_name="booking/add_room.html")
+def book_room(request):
+    if request.method == "POST":
+        room = Room.objects.filter(number = request.POST.get("room_number")).first()
+        user = User.objects.filter(email = request.POST.get("email_user")).first()
+
+        start_date = request.POST.get("start_date")
+        print(start_date)
+        start_date_processing = start_date.replace('T', '-').replace(':', '-').split('-')
+        start_date_processing = [int(v) for v in start_date_processing]
+        start_date = datetime(*start_date_processing)
+
+        end_date = request.POST.get("end_date")
+        print(end_date)
+        end_date_processing = end_date.replace('T', '-').replace(':', '-').split('-')
+        end_date_processing = [int(v) for v in end_date_processing]
+        end_date = datetime(*end_date_processing)
+        
+        booking = Booking(room = room, start_date=start_date, end_date=end_date)
+        
+        booking.save()
+        booking.user.add(user)
+
+
+        return redirect("rooms")
+    else:
+        return render(request, template_name="booking/book_room.html")
+    

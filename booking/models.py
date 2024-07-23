@@ -36,6 +36,6 @@ class Booking(models.Model):
     end_date = models.DateTimeField()
 
     def __str__(self):
-        return self.start_date
+        return str(self.start_date)
     class Meta:
         ordering = ["room"]
