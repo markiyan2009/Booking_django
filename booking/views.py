@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from booking.models import User, Room, Booking 
+from booking.models import  Room, Booking 
 from django.http import HttpResponse
 from datetime import datetime
+from hotel_system import settings
 # Create your views here
 def index(request):
     return render(request, template_name="booking/index.html")
@@ -27,7 +28,7 @@ def add_user(request):
         name = request.POST.get("name")
         email = request.POST.get("email")
         password = request.POST.get("password")
-        user = User(name = name, email=email,password=password)
+        user = settings.AUTH_USER_MODEL(name = name, email=email,password=password)
         user.save()
 
         return redirect("rooms")
@@ -37,7 +38,7 @@ def add_user(request):
 def delete_user(request):
     if request.method == "POST":
         email = request.POST.get("email")
-        user = User.objects.filter(email=email).first()
+        user = settings.AUTH_USER_MODEL.objects.filter(email=email).first()
         user.delete()
 
         return redirect("rooms")
@@ -65,7 +66,7 @@ def add_room(request):
 def book_room(request):
     if request.method == "POST":
         room = Room.objects.filter(number = request.POST.get("room_number")).first()
-        user = User.objects.filter(email = request.POST.get("email_user")).first()
+        user = settings.AUTH_USER_MODEL.objects.filter(email = request.POST.get("email_user")).first()
 
         start_date = request.POST.get("start_date")
         print(start_date)

@@ -1,5 +1,5 @@
 from django.db import models
-
+from hotel_system import settings
 # Create your models here.
 class Room(models.Model):
     number = models.IntegerField()
@@ -18,20 +18,14 @@ class Room(models.Model):
 
     
     
-class User(models.Model):
-    email = models.EmailField()
-    name = models.CharField(max_length=150)
-    password = models.CharField(max_length=20)
 
-    def __str__(self):
-        return self.name
     
 class Meta:
         ordering = ["name"]
 
 class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    user = models.ManyToManyField(User)
+    user = models.ManyToManyField(settings.AUTH_USER_MODEL)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
