@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from booking.models import  Room, Booking 
 from django.http import HttpResponse
 from datetime import datetime
+from django.contrib import messages
 from hotel_system import settings
+from django.contrib.auth import get_user_model
 # Create your views here
 def index(request):
     return render(request, template_name="booking/index.html")
@@ -37,11 +39,14 @@ def add_user(request):
     
 def delete_user(request):
     if request.method == "POST":
-        email = request.POST.get("email")
-        user = settings.AUTH_USER_MODEL.objects.filter(email=email).first()
-        user.delete()
+        username = request.POST.get("username")
+        user = get_user_model().objects.filter(username=username).first()
+        if user is not None:
+            user.delete()
 
-        return redirect("rooms")
+            return redirect("rooms")
+        else:
+            messages.error(request,message="User not found")
     else:
         return render(request,template_name="booking/delete_user.html")
 
@@ -66,7 +71,7 @@ def add_room(request):
 def book_room(request):
     if request.method == "POST":
         room = Room.objects.filter(number = request.POST.get("room_number")).first()
-        user = settings.AUTH_USER_MODEL.objects.filter(email = request.POST.get("email_user")).first()
+        user = get_user_model().objects.filter(email = request.POST.get("email_user")).first()
 
         start_date = request.POST.get("start_date")
         print(start_date)
@@ -89,4 +94,11 @@ def book_room(request):
         return redirect("rooms")
     else:
         return render(request, template_name="booking/book_room.html")
-    
+
+def get_room(request, room_number):
+    room = Room.objects.filter(number = room_number).first()
+    return render(
+        request,
+        template_name="booking/room.html",
+        context={"room":room}
+    )

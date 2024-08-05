@@ -2,6 +2,6 @@
 
 {%block content%}
     {%for room in rooms%}
-        <h1><a href="">Room #{{room.number}}</a></h1>
+        <a href="{%url 'room' room_number=room.number %}"><h1>Room #{{room.number}}</h1></a>
     {%endfor%}
 {%endblock%}
